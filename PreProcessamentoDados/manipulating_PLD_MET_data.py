@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from PreProcessamentoDados.manipulate_files import get_met_group
+from manipulate_files import get_met_group
 
 '''
 This script is used to parse the PLD and MET files into a pandas dataframe.
@@ -88,6 +88,7 @@ def surge_sway_data_mean(met_df: pd.DataFrame, above_time: float = 0) -> tuple[f
 
     return surge_mean, sway_mean
 
+
 def filter_met_data(met_file_path):
     met_df = parse_met_file_to_dataframe(met_file_path)
 
@@ -98,7 +99,7 @@ def filter_met_data(met_file_path):
     group_list = [group] * num_rows
 
     # list of cases
-    cases_lits = list(range(1, num_rows+ 1))
+    cases_lits = list(range(1, num_rows + 1))
 
     # get the VVEL, VDIR, HS1, TP1, DIR1, CVEL0, CDIR0 columns
     met_df = met_df[['VVEL', 'VDIR', 'HS1', 'TP1', 'DIR1', 'CVEL0', 'CDIR0']]
@@ -108,6 +109,7 @@ def filter_met_data(met_file_path):
     met_df['case'] = cases_lits
 
     return met_df
+
 
 def clear_empty_rows(df):
     # Create a copy of the DataFrame to avoid modifying the original one
@@ -123,4 +125,3 @@ def clear_empty_rows(df):
     df.reset_index(drop=True, inplace=True)
 
     return df
-
