@@ -6,7 +6,7 @@ import pathlib
 import pandas as pd
 
 # 1. Find all met and pld files in the directory
-data_folder = pathlib.Path(r"C:\Users\LUIMAR\Desktop\TCC test\Dados")
+data_folder = pathlib.Path(r"C:\Users\LUIMAR\Desktop\TCC Dados\Dados")
 
 met_files = list(data_folder.glob('**/*.MET'))
 pld_files = list(data_folder.glob('**/*.PLD'))
@@ -59,11 +59,11 @@ if not motion_data['group'].equals(enviroment_data['group']) or not motion_data[
 
 # 8. Drop the group and case columns from the motion data and for the met data
 motion_data.drop(['group', 'case'], axis=1, inplace=True)
-enviroment_data.drop(['group', 'case'], axis=1, inplace=True)
+# enviroment_data.drop(['group', 'case'], axis=1, inplace=True)
 
 # 8. Concatenate the motion data with the met data
 all_data = pd.concat([motion_data, enviroment_data], axis=1)
 
-# 7. Save the data into a json file, considering the first two columns as the outputs and the rest as the inputs
-
+# 7. Save the data into csv file, considering the first two columns as the outputs and the rest as the inputs
+all_data.to_csv('data_cases_group.csv', index=False)
 
