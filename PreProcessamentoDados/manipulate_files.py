@@ -35,8 +35,9 @@ def get_PLD_group(pld_path : pathlib.Path) -> int:
     file_name = pld_path.name
     file_name_parts = file_name.split('_')
 
+    wind_part = file_name_parts[0]
     # file name is in the form of Wind-1_C100_d_UF1.PLD, so the group is the last character of the first part
-    group = int(file_name_parts[0][-1])
+    group = int(wind_part.split('-')[1])
 
     return group
 
@@ -52,10 +53,10 @@ def get_PLD_case(pld_path : pathlib.Path) -> int:
     return case_num
 
 def get_met_group(met_path : pathlib.Path):
-    file_name = met_path.name
-    file_name_parts = file_name.split('_')
+    file_name = met_path.stem
+    file_name_parts = file_name.split('-')
 
     # file name is in the form of conjunto2_jun2-1.met, so the group is the 5th last character of the second part
-    group = int(file_name_parts[1][-5])
+    group = int(file_name_parts[1])
 
     return group

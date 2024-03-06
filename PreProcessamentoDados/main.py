@@ -6,7 +6,7 @@ import pathlib
 import pandas as pd
 
 # 1. Find all met and pld files in the directory
-data_folder = pathlib.Path(r"C:\Users\LUIMAR\Desktop\TCC Dados\Dados")
+data_folder = pathlib.Path(r"C:\Users\LUIMAR\Desktop\TCC Dados\Linhas Avariadas")
 
 met_files = list(data_folder.glob('**/*.MET'))
 pld_files = list(data_folder.glob('**/*.PLD'))
@@ -50,8 +50,9 @@ enviroment_data = pd.concat(met_df_list, axis=0, ignore_index=True)
 enviroment_data = clear_empty_rows(enviroment_data)
 motion_data = clear_empty_rows(motion_data)
 
-# 7. Sort the motion data by group and case to match with pld
+# 7. Sort the motion and environment data by group and case to match each other
 motion_data = motion_data.sort_values(by=['group', 'case'], ignore_index=True)
+enviroment_data = enviroment_data.sort_values(by=['group', 'case'], ignore_index=True)
 
 # 8. Check if the motion data and met data have the group and case columns in the same order
 if not motion_data['group'].equals(enviroment_data['group']) or not motion_data['case'].equals(enviroment_data['case']):
@@ -59,11 +60,11 @@ if not motion_data['group'].equals(enviroment_data['group']) or not motion_data[
 
 # 8. Drop the group and case columns from the motion data and for the met data
 motion_data.drop(['group', 'case'], axis=1, inplace=True)
-# enviroment_data.drop(['group', 'case'], axis=1, inplace=True)
+#enviroment_data.drop(['group', 'case'], axis=1, inplace=True)
 
 # 8. Concatenate the motion data with the met data
 all_data = pd.concat([motion_data, enviroment_data], axis=1)
 
 # 7. Save the data into csv file, considering the first two columns as the outputs and the rest as the inputs
-all_data.to_csv('data_cases_group.csv', index=False)
+all_data.to_csv('avariada_all_group_case.csv', index=False)
 
