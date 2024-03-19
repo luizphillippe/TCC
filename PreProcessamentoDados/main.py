@@ -1,12 +1,12 @@
+import pandas as pd
+import pathlib
+from manipulate_files import find_PLD_file_wrong_name, correct_PLD_file_name, get_PLD_group, get_PLD_case
+from manipulating_PLD_MET_data import *
 STATIONARY_TIME = 10
 
-from manipulating_PLD_MET_data import *
-from manipulate_files import find_PLD_file_wrong_name, correct_PLD_file_name, get_PLD_group, get_PLD_case
-import pathlib
-import pandas as pd
 
 # 1. Find all met and pld files in the directory
-data_folder = pathlib.Path(r"C:\Users\LUIMAR\Desktop\TCC Dados\Linhas Avariadas")
+data_folder = pathlib.Path(r".\SimulationData")
 
 met_files = list(data_folder.glob('**/*.MET'))
 pld_files = list(data_folder.glob('**/*.PLD'))
@@ -28,7 +28,8 @@ pld_case_list = []
 for file in pld_files:
     # get the mean of the surge and sway data above 10 seconds to avoid the transient
     pld_df = parse_pld_file_to_dataframe(file)
-    surge_mean, sway_mean = surge_sway_data_mean(pld_df, above_time=STATIONARY_TIME)
+    surge_mean, sway_mean = surge_sway_data_mean(
+        pld_df, above_time=STATIONARY_TIME)
 
     surge_mean_list.append(surge_mean)
     sway_mean_list.append(sway_mean)
@@ -38,12 +39,13 @@ for file in pld_files:
     pld_case_list.append(get_PLD_case(file))
 
 # Store the data into a dataframe
-motion_data = pd.DataFrame({'surge_mean': surge_mean_list, 'sway_mean': sway_mean_list, 'group': pld_group_list, 'case': pld_case_list})
+motion_data = pd.DataFrame({'surge_mean': surge_mean_list,
+                           'sway_mean': sway_mean_list, 'group': pld_group_list, 'case': pld_case_list})
 
 # 5. Concatenate all the met data and filter VVEL, VDIR, HS1, TP1, DIR1, CVEL0, CDIR0 columns. Add group and case collumns too
 met_df_list = [filter_met_data(met_file) for met_file in met_files]
 
-# concatenate the met data 
+# concatenate the met data
 enviroment_data = pd.concat(met_df_list, axis=0, ignore_index=True)
 
 # 6. Clear empty rows
@@ -52,19 +54,21 @@ motion_data = clear_empty_rows(motion_data)
 
 # 7. Sort the motion and environment data by group and case to match each other
 motion_data = motion_data.sort_values(by=['group', 'case'], ignore_index=True)
-enviroment_data = enviroment_data.sort_values(by=['group', 'case'], ignore_index=True)
+enviroment_data = enviroment_data.sort_values(
+    by=['group', 'case'], ignore_index=True)
 
 # 8. Check if the motion data and met data have the group and case columns in the same order
 if not motion_data['group'].equals(enviroment_data['group']) or not motion_data['case'].equals(enviroment_data['case']):
-    raise Exception('The motion data and met data do not have the group and case columns in the same order')
+    raise Exception(
+        'The motion data and met data do not have the group and case columns in the same order')
 
 # 8. Drop the group and case columns from the motion data and for the met data
+# Tip: Commenting the drop method for enviroment_data may help to check valeus in the dataframe
 motion_data.drop(['group', 'case'], axis=1, inplace=True)
-#enviroment_data.drop(['group', 'case'], axis=1, inplace=True)
+enviroment_data.drop(['group', 'case'], axis=1, inplace=True)
 
 # 8. Concatenate the motion data with the met data
 all_data = pd.concat([motion_data, enviroment_data], axis=1)
 
 # 7. Save the data into csv file, considering the first two columns as the outputs and the rest as the inputs
-all_data.to_csv('avariada_all_group_case.csv', index=False)
-
+all_data.to_csv('Data.csv', index=False)

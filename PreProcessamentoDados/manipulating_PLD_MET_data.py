@@ -69,7 +69,7 @@ def parse_met_file_to_dataframe(file_path: str) -> pd.DataFrame:
     return df
 
 
-def surge_sway_data_mean(met_df: pd.DataFrame, above_time: float = 0) -> tuple[float, float]:
+def surge_sway_data_mean(met_df: pd.DataFrame, above_time: float = 0) -> tuple:
     '''
     This function calculates the mean of the surge and sway columns of the pld dataframe.
     :param met_df: dataframe with the met data
